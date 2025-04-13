@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.example.systempractice.MainController"
+           fx:id="rootPane"
+           prefWidth="1440.0" prefHeight="1024.0"
+           style="-fx-border-color: #3F586E; -fx-border-width: 2; -fx-background-color: #3F586E; -fx-background-insets: 0;">
+
+    <VBox alignment="CENTER" spacing="20.0">
+        <!-- Title -->
+        <VBox alignment="CENTER" spacing="5.0">
+            <Label text="BOARDING HOUSE"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;" />
+            <Label text="Management System"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;" />
+        </VBox>
+
+        <!-- LOGIN FORM -->
+        <VBox fx:id="loginPane" alignment="CENTER" spacing="15.0">
+            <HBox alignment="CENTER">
+                <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
+                    <Label text="Email:"
+                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                    <TextField fx:id="usernameField" promptText="Input email" maxWidth="250" />
+                </VBox>
+            </HBox>
+
+            <HBox alignment="CENTER">
+                <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
+                    <Label text="Password:"
+                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                    <PasswordField fx:id="passwordField" promptText="Input password" maxWidth="250" />
+                </VBox>
+            </HBox>
+
+            <Button text="Login"
+                    style="-fx-font-weight: bold; -fx-text-fill: #332F2F; -fx-background-color: #CDCCAB"
+                    onAction="#onLoginButtonClick" maxWidth="100" />
+
+            <!-- Account error -->
+            <Label fx:id="loginErrorLabel" text=" " style="-fx-text-fill: red;" visible="false" />
+
+            <Label text="Don't have an account?"
+                   onMouseClicked="#onLabelClick"
+                   style="-fx-text-fill: white; -fx-font-size: 14; -fx-underline: true; -fx-cursor: hand;" />
+        </VBox>
+
+        <!-- SIGNUP FORM -->
+        <VBox fx:id="signupPane" alignment="CENTER" spacing="15.0" visible="false" managed="false">
+
+            <!-- Email -->
+            <HBox alignment="CENTER">
+                <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
+                    <Label text="Email:"
+                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                    <TextField fx:id="signupEmailField" promptText="Enter email" maxWidth="250" />
+                </VBox>
+            </HBox>
+
+            <!-- Username -->
+            <HBox alignment="CENTER">
+                <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
+                    <Label text="Username:"
+                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                    <TextField fx:id="signupUsernameField" promptText="Enter username" maxWidth="250" />
+                </VBox>
+            </HBox>
+
+            <!-- Password -->
+            <HBox alignment="CENTER">
+                <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
+                    <Label text="Password:"
+                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                    <PasswordField fx:id="signupPasswordField" promptText="Enter password" maxWidth="250" />
+                </VBox>
+            </HBox>
+
+            <!-- Confirm Password -->
+            <HBox alignment="CENTER">
+                <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
+                    <Label text="Confirm Password:"
+                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                    <PasswordField fx:id="signupConfirmPasswordField" promptText="Re-enter password" maxWidth="250" />
+                </VBox>
+            </HBox>
+
+            <!-- Error messages -->
+            <Label fx:id="errorLabel"
+                   style="-fx-text-fill: red; -fx-font-size: 14; -fx-font-weight: bold; -fx-text-align: center;" />
+
+            <!-- Signup Button -->
+            <Button text="Sign Up"
+                    style="-fx-font-weight: bold; -fx-text-fill: #332F2F; -fx-background-color: #CDCCAB"
+                    onAction="#onSignupButtonClick" maxWidth="100" />
+
+            <!-- Back to Login -->
+            <Label text="Already have an account?"
+                   onMouseClicked="#onBackToLoginClick"
+                   style="-fx-text-fill: white; -fx-font-size: 14; -fx-underline: true; -fx-cursor: hand;" />
+        </VBox>
+
+    </VBox>
+</StackPane>
