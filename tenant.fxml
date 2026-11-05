@@ -1,10 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<StackPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="com.example.systempractice.MainController">
-
-    <Label text="Welcome to the Tenant Page"
-           style="-fx-font-size: 24px; -fx-font-weight: bold;" />
-</StackPane>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.systempractice.TenantController"
+            style="-fx-background-color: #3F586E;">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 15;">
+            <Label fx:id="welcomeLabel" text="Welcome" wrapText="true" HBox.hgrow="ALWAYS"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" />
+            <Button text="Refresh" onAction="#refresh" />
+            <Button text="Log out" onAction="#onLogout" />
+        </HBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #3F586E; -fx-background-color: #3F586E;">
+            <content>
+                <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: #3F586E;">
+                    <Label text="Your room" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                    <Label fx:id="roomLabel" text="Loading..." wrapText="true" style="-fx-text-fill: white;" />
+                    <Label text="Rent payments" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                    <ListView fx:id="paymentList" prefHeight="110"><placeholder><Label text="No payments recorded." /></placeholder></ListView>
+                    <Label text="Maintenance requests" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                    <ListView fx:id="requestList" prefHeight="110"><placeholder><Label text="No maintenance requests." /></placeholder></ListView>
+                    <Label text="Describe a maintenance issue" style="-fx-text-fill: white;" />
+                    <TextArea fx:id="requestDescription" promptText="Describe the issue" wrapText="true" prefRowCount="3" />
+                    <Button text="Submit request" onAction="#submitRequest" />
+                    <Label fx:id="statusLabel" wrapText="true" style="-fx-text-fill: white;" />
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

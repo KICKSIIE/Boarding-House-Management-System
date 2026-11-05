@@ -22,7 +22,7 @@
             <HBox alignment="CENTER">
                 <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
                     <Label text="Email:"
-                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                           style="-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold" />
                     <TextField fx:id="usernameField" promptText="Input email" maxWidth="250" />
                 </VBox>
             </HBox>
@@ -30,7 +30,7 @@
             <HBox alignment="CENTER">
                 <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
                     <Label text="Password:"
-                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                           style="-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold" />
                     <PasswordField fx:id="passwordField" promptText="Input password" maxWidth="250" />
                 </VBox>
             </HBox>
@@ -54,7 +54,7 @@
             <HBox alignment="CENTER">
                 <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
                     <Label text="Email:"
-                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                           style="-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold" />
                     <TextField fx:id="signupEmailField" promptText="Enter email" maxWidth="250" />
                 </VBox>
             </HBox>
@@ -63,7 +63,7 @@
             <HBox alignment="CENTER">
                 <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
                     <Label text="Username:"
-                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                           style="-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold" />
                     <TextField fx:id="signupUsernameField" promptText="Enter username" maxWidth="250" />
                 </VBox>
             </HBox>
@@ -72,7 +72,7 @@
             <HBox alignment="CENTER">
                 <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
                     <Label text="Password:"
-                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                           style="-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold" />
                     <PasswordField fx:id="signupPasswordField" promptText="Enter password" maxWidth="250" />
                 </VBox>
             </HBox>
@@ -81,14 +81,14 @@
             <HBox alignment="CENTER">
                 <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="250">
                     <Label text="Confirm Password:"
-                           style="-fx-font-size: 18px; -fx-text-fill: white; fx-font-weight: bold" />
+                           style="-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold" />
                     <PasswordField fx:id="signupConfirmPasswordField" promptText="Re-enter password" maxWidth="250" />
                 </VBox>
             </HBox>
 
             <!-- Error messages -->
             <Label fx:id="errorLabel"
-                   style="-fx-text-fill: red; -fx-font-size: 14; -fx-font-weight: bold; -fx-text-align: center;" />
+                   style="-fx-text-fill: red; -fx-font-size: 14; -fx-font-weight: bold;" />
 
             <!-- Signup Button -->
             <Button text="Sign Up"
