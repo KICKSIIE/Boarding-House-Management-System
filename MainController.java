@@ -1,22 +1,19 @@
 package com.example.systempractice;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class MainController {
-
-    PasswordHasher PasswordHasher = new PasswordHasher();
+    private final AccountService accounts = new AccountService(database_server::getConnection);
     @FXML private VBox loginPane;
     @FXML private VBox signupPane;
     @FXML private TextField usernameField;
@@ -26,142 +23,72 @@ public class MainController {
     @FXML private PasswordField signupPasswordField;
     @FXML private PasswordField signupConfirmPasswordField;
     @FXML private Label loginErrorLabel;
+    @FXML private Label errorLabel;
 
-    @FXML
-    private void onLoginButtonClick() {
+    @FXML private void onLoginButtonClick() {
         String email = usernameField.getText().trim();
         String password = passwordField.getText();
-
-        loginErrorLabel.setText("");
         loginErrorLabel.setVisible(false);
-
         if (email.isEmpty() || password.isEmpty()) {
-            loginErrorLabel.setText("Email and password must not be empty.");
-            loginErrorLabel.setVisible(true);
+            show(loginErrorLabel, "Email and password must not be empty.");
             return;
         }
-
-        try (Connection conn = database_server.getConnection()) {
-            String sql = "SELECT password FROM users WHERE email = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, email);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                String storedHashedPassword = rs.getString("password");
-                String hashedPassword = PasswordHasher.hashPassword(password);
-
-                if (hashedPassword != null && hashedPassword.equals(storedHashedPassword)) {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("tenant.fxml"));
-                    Parent tenantPage = loader.load();
-                    Stage stage = (Stage) usernameField.getScene().getWindow();
-                    stage.setScene(new Scene(tenantPage));
-                    stage.show();
-                } else {
-                    loginErrorLabel.setText("Incorrect password.");
-                    loginErrorLabel.setVisible(true);
-                }
-            } else {
-                loginErrorLabel.setText("No account found with that email.");
-                loginErrorLabel.setVisible(true);
-            }
-        } catch (SQLException | IOException e) {
-            loginErrorLabel.setText("Login failed: " + e.getMessage());
-            loginErrorLabel.setVisible(true);
-        }
-    }
-
-    @FXML
-    protected void onLabelClick() {
-        // Hide login pane and show signup pane
-        loginPane.setVisible(false);
-        loginPane.setManaged(false);
-        signupPane.setVisible(true);
-        signupPane.setManaged(true);
-
-        // Hide login error label when switching to signup
-        loginErrorLabel.setVisible(false);
-        loginErrorLabel.setText("");
-    }
-
-    @FXML
-    protected void onBackToLoginClick() {
-        // Hide signup pane and show login pane
-        signupPane.setVisible(false);
-        signupPane.setManaged(false);
-        loginPane.setVisible(true);
-        loginPane.setManaged(true);
-
-        // Also hide signup error label if you have one
-        errorLabel.setVisible(false);
-        errorLabel.setText("");
-
-    }
-
-    @FXML
-    private Label errorLabel; // To display error messages
-
-    @FXML
-    private void onSignupButtonClick() {
-        String email = signupEmailField.getText();
-        String username = signupUsernameField.getText();
-        String password = signupPasswordField.getText();
-        String confirmPassword = signupConfirmPasswordField.getText();
-
-        // Clear any previous error messages
-        errorLabel.setText("");
-        errorLabel.setVisible(false);  // Hide the label initially
-
-        // Validate Email (check for '@' symbol)
-        if (!email.contains("@")) {
-            errorLabel.setText("Email must contain '@'");
-            errorLabel.setVisible(true); // Show the error label
-            return;
-        }
-
-        // Validate Passwords Match
-        if (!password.equals(confirmPassword)) {
-            errorLabel.setText("Passwords do not match.");
-            errorLabel.setVisible(true); // Show the error label
-            return;
-        }
-
-        // Check if username already exists in the database
-        try (Connection conn = database_server.getConnection()) {
-            String checkUsernameQuery = "SELECT COUNT(*) FROM users WHERE username = ?";
-            PreparedStatement stmt = conn.prepareStatement(checkUsernameQuery);
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next() && rs.getInt(1) > 0) {
-                errorLabel.setText("Username is already taken.");
-                errorLabel.setVisible(true); // Show the error label
+        try {
+            if (!accounts.login(email, password)) {
+                show(loginErrorLabel, "Incorrect email or password.");
                 return;
             }
-
-            // If no errors, proceed to insert the new account
-            String hashedPassword = PasswordHasher.hashPassword(password);
-
-            String sql = "INSERT INTO users (email, username, password) VALUES (?, ?, ?)";
-            PreparedStatement insertStmt = conn.prepareStatement(sql);
-            insertStmt.setString(1, email);
-            insertStmt.setString(2, username);
-            insertStmt.setString(3, hashedPassword); // Store the password before storing
-            insertStmt.executeUpdate();
-
-            errorLabel.setText("Account created successfully!");
-            errorLabel.setVisible(true); // Show the success message
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("tenant.fxml"));
+            Parent page = loader.load();
+            TenantController controller = loader.getController();
+            controller.setEmail(email);
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(page, 640, 700));
         } catch (SQLException e) {
-            errorLabel.setText("Error: " + e.getMessage());
-            errorLabel.setVisible(true); // Show the error label
+            show(loginErrorLabel, "Unable to connect to the account database. Check its configuration.");
+        } catch (IOException e) {
+            show(loginErrorLabel, "Unable to open the tenant page.");
         }
     }
 
-    private void showAlert(Alert.AlertType type, String message) {
-        Alert alert = new Alert(type);
-        alert.setContentText(message);
-        alert.showAndWait();
+    @FXML protected void onLabelClick() {
+        loginPane.setVisible(false); loginPane.setManaged(false);
+        signupPane.setVisible(true); signupPane.setManaged(true);
+        loginErrorLabel.setVisible(false);
     }
 
-}
+    @FXML protected void onBackToLoginClick() {
+        signupPane.setVisible(false); signupPane.setManaged(false);
+        loginPane.setVisible(true); loginPane.setManaged(true);
+        errorLabel.setVisible(false);
+    }
 
+    @FXML private void onSignupButtonClick() {
+        errorLabel.setVisible(false);
+        String password = signupPasswordField.getText();
+        if (!password.equals(signupConfirmPasswordField.getText())) {
+            show(errorLabel, "Passwords do not match.");
+            return;
+        }
+        try {
+            AccountService.SignupResult result = accounts.signup(signupEmailField.getText(), signupUsernameField.getText(), password);
+            switch (result) {
+                case INVALID_EMAIL -> show(errorLabel, "Enter a valid email address.");
+                case INVALID_USERNAME -> show(errorLabel, "Enter a username of up to 100 characters.");
+                case INVALID_PASSWORD -> show(errorLabel, "Password must be 8 to 256 characters.");
+                case USERNAME_TAKEN -> show(errorLabel, "Username is already taken.");
+                case EMAIL_TAKEN -> show(errorLabel, "Email is already registered.");
+                case CREATED -> {
+                    usernameField.setText(signupEmailField.getText().trim());
+                    signupPasswordField.clear(); signupConfirmPasswordField.clear();
+                    onBackToLoginClick();
+                    show(loginErrorLabel, "Account created. Please log in.");
+                }
+            }
+        } catch (SQLException e) {
+            show(errorLabel, "Unable to create the account. Check the database configuration.");
+        }
+    }
+
+    private void show(Label label, String message) { label.setText(message); label.setVisible(true); }
+}
